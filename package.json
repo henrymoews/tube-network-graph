@@ -1,0 +1,42 @@
+{
+  "name": "@henrymoews/workspace",
+  "version": "0.1.0",
+  "description": "A tool to easily create tube-like network maps based on graphviz.",
+  "scripts": {
+    "compile": "babel --presets es2015,stage-0 -d bin/ src/",
+    "prepublish": "npm run compile",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tube-network-graph": "tube-network-graph"
+  },
+  "bin": {
+    "tube-network-graph": "bin/tube-network-graph.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/henrymoews/tube-network-graph.git"
+  },
+  "keywords": [
+    "tube",
+    "network",
+    "graph",
+    "graphviz",
+    "bus",
+    "train",
+    "stops",
+    "stations"
+  ],
+  "author": "Henry Moews",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/henrymoews/tube-network-graph/issues"
+  },
+  "homepage": "https://github.com/henrymoews/tube-network-graph#readme",
+  "dependencies": {
+    "shelljs": "^0.7.8"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1"
+  }
+}

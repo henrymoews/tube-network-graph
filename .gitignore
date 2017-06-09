@@ -1,3 +1,6 @@
+# bin files
+bin
+
 # Logs
 logs
 *.log
@@ -56,4 +59,8 @@ typings/
 
 # dotenv environment variables file
 .env
+
+# Jetbrains IDE files
+**/.idea/workspace.xml
+**/.idea/tasks.xml
 
