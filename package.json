@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "description": "A tool to easily create tube-like network maps based on graphviz.",
   "scripts": {
-    "compile": "babel --presets es2015,stage-0 -d bin/ src/",
-    "watch": "babel --watch --presets es2015,stage-0 -d bin/ src/",
+    "compile": "standard --fix && babel --presets es2015,stage-0 -d bin/ src/",
+    "watch": "standard --fix && babel --watch --presets es2015,stage-0 -d bin/ src/",
     "prepublish": "npm run compile",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "standard --fix && echo \"Error: no test specified\" && exit 1",
     "tube-network-graph": "tube-network-graph"
   },
   "bin": {
