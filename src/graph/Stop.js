@@ -6,8 +6,8 @@ export const CONNECTION_POINTS = {
   NORTHEAST: 'NORTHEAST',
   NORTHWEST: 'NORTHWEST',
   SOUTHEAST: 'SOUTHEAST',
-  SOUTHWEST: 'SOUTHWEST',
-};
+  SOUTHWEST: 'SOUTHWEST'
+}
 
 export const CONNECTION_POINT_ORDER = [
   CONNECTION_POINTS.EAST,
@@ -17,8 +17,8 @@ export const CONNECTION_POINT_ORDER = [
   CONNECTION_POINTS.NORTHEAST,
   CONNECTION_POINTS.SOUTHWEST,
   CONNECTION_POINTS.SOUTHEAST,
-  CONNECTION_POINTS.NORTHWEST,
-];
+  CONNECTION_POINTS.NORTHWEST
+]
 
 export const CONNECTION_POINT_OPPOSITES = {
   NORTH: CONNECTION_POINTS.SOUTH,
@@ -28,109 +28,108 @@ export const CONNECTION_POINT_OPPOSITES = {
   NORTHEAST: CONNECTION_POINTS.SOUTHWEST,
   NORTHWEST: CONNECTION_POINTS.SOUTHEAST,
   SOUTHWEST: CONNECTION_POINTS.NORTHEAST,
-  SOUTHEAST: CONNECTION_POINTS.NORTHWEST,
-};
+  SOUTHEAST: CONNECTION_POINTS.NORTHWEST
+}
 
-let idCounter = 0;
+let idCounter = 0
 
 class Stop {
-
-  static createByName(name) {
-    return new Stop({name});
+  static createByName (name) {
+    return new Stop({name})
   }
 
   /**
    *
    * @param json {{id: string, name: string, northof: string, eastof: string, westof: string, southof: string, northeastof: string, southeastof: string, northwestof: string, southwestof: string}}
    */
-  constructor(json) {
-    this.name = json.name;
-    this.id = json.id || `stop_id_${idCounter++}`;
+  constructor (json) {
+    this.name = json.name
+    this.id = json.id || `stop_id_${idCounter++}`
 
-    this.westof = json.westof;
-    this.eastof = json.eastof;
-    this.northof = json.northof;
-    this.southof = json.southof;
-    this.northeastof = json.northeastof;
-    this.southeastof = json.southeastof;
-    this.northwestof = json.northwestof;
-    this.southwestof = json.southwestof;
+    this.westof = json.westof
+    this.eastof = json.eastof
+    this.northof = json.northof
+    this.southof = json.southof
+    this.northeastof = json.northeastof
+    this.southeastof = json.southeastof
+    this.northwestof = json.northwestof
+    this.southwestof = json.southwestof
 
-    this.passingLineIds = [];
-    this.terminatingLineIds = [];
+    this.passingLineIds = []
+    this.terminatingLineIds = []
 
-    this.cx = null;
-    this.cy = null;
+    this.cx = null
+    this.cy = null
 
-    this.connectionsByConnectionPoint = {};
+    this.connectionsByConnectionPoint = {}
     CONNECTION_POINT_ORDER.forEach(point => {
-      this.connectionsByConnectionPoint[point] = [];
-    });
+      this.connectionsByConnectionPoint[point] = []
+    })
   }
 
-  addConnection(point, connection){
-    this.connectionsByConnectionPoint[point].push(connection);
+  addConnection (point, connection) {
+    this.connectionsByConnectionPoint[point].push(connection)
   }
 
-  addPassingLineId(id) {
-    this.passingLineIds = this.passingLineIds.concat(id);
+  addPassingLineId (id) {
+    this.passingLineIds = this.passingLineIds.concat(id)
   }
 
-  addTerminatingLineId(id) {
-    this.terminatingLineIds = this.terminatingLineIds.concat(id);
+  addTerminatingLineId (id) {
+    this.terminatingLineIds = this.terminatingLineIds.concat(id)
   }
 
-  getFreeConnectionPoint() {
-    let allowedCount = 0;
-    let point = null;
-    while(point === null){
+  getFreeConnectionPoint () {
+    let allowedCount = 0
+    let point = null
+    while (point === null) {
       point = CONNECTION_POINT_ORDER.find(point => {
-        return this.connectionsByConnectionPoint[point].length <= allowedCount;
-      });
+        return this.connectionsByConnectionPoint[point].length <= allowedCount
+      })
     }
-    return point;
+    return point
   }
 
-  getNumberOfPassingLines() {
-    return this.passingLineIds.length;
+  getNumberOfPassingLines () {
+    return this.passingLineIds.length
   }
 
-  getPositionConstraintFor(otherStop){
-    if(this.northof === otherStop.id){
-      return CONNECTION_POINTS.NORTH;
+  getPositionConstraintFor (otherStop) {
+    if (this.northof === otherStop.id) {
+      return CONNECTION_POINTS.NORTH
     }
-    if(this.southof === otherStop.id){
-      return CONNECTION_POINTS.SOUTH;
+    if (this.southof === otherStop.id) {
+      return CONNECTION_POINTS.SOUTH
     }
-    if(this.eastof === otherStop.id){
-      return CONNECTION_POINTS.EAST;
+    if (this.eastof === otherStop.id) {
+      return CONNECTION_POINTS.EAST
     }
-    if(this.westof === otherStop.id){
-      return CONNECTION_POINTS.WEST;
+    if (this.westof === otherStop.id) {
+      return CONNECTION_POINTS.WEST
     }
-    if(this.northeastof === otherStop.id){
-      return CONNECTION_POINTS.NORTHEAST;
+    if (this.northeastof === otherStop.id) {
+      return CONNECTION_POINTS.NORTHEAST
     }
-    if(this.southeastof === otherStop.id){
-      return CONNECTION_POINTS.SOUTHEAST;
+    if (this.southeastof === otherStop.id) {
+      return CONNECTION_POINTS.SOUTHEAST
     }
-    if(this.southwestof === otherStop.id){
-      return CONNECTION_POINTS.SOUTHWEST;
+    if (this.southwestof === otherStop.id) {
+      return CONNECTION_POINTS.SOUTHWEST
     }
-    if(this.northwestof === otherStop.id){
-      return CONNECTION_POINTS.NORTHWEST;
+    if (this.northwestof === otherStop.id) {
+      return CONNECTION_POINTS.NORTHWEST
     }
-    return null;
+    return null
   }
 
-  getTotalNumberOfLines() {
-    return this.passingLineIds.length + this.terminatingLineIds.length;
+  getTotalNumberOfLines () {
+    return this.passingLineIds.length + this.terminatingLineIds.length
   }
 
-  setPosition(cx, cy) {
-    this.cx = cx;
-    this.cy = cy;
+  setPosition (cx, cy) {
+    this.cx = cx
+    this.cy = cy
   }
 }
 
-export default Stop;
+export default Stop
