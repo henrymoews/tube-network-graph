@@ -4,8 +4,10 @@
   "description": "A tool to easily create tube-like network maps based on graphviz.",
   "scripts": {
     "compile": "standard --fix && babel --presets es2015,stage-0 -d bin/ src/",
-    "watch": "standard --fix && babel --watch --presets es2015,stage-0 -d bin/ src/",
+    "watch": "babel --watch --presets es2015,stage-0 -d bin/ src/",
     "prepublish": "npm run compile",
+    "postinstall": "echo Please make sure you installed the 'standard' package globally or run 'npm install --dev standard' in this folder.",
+    "standard": "standard --fix",
     "test": "standard --fix && echo \"Error: no test specified\" && exit 1",
     "tube-network-graph": "tube-network-graph"
   },
@@ -37,11 +39,11 @@
     "babel-polyfill": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "eslint-config-standard": "^10.2.1",
     "get-stdin": "^5.0.1",
-    "shelljs": "^0.7.8",
-    "standard": "^10.0.2"
+    "shelljs": "^0.7.8"
   },
   "dependencies": {
-    "node-jsxml": "^0.9.0"
+    "xmldom": "^0.1.27"
   }
 }

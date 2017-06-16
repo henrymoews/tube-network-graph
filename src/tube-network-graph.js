@@ -8,11 +8,11 @@ import DataProcessor from './graph/DataProcessor'
 // the babel requires are necessary for async/await
 require('babel-core/register')
 require('babel-polyfill')
-const jsxml = require('node-jsxml')
+const DomParser = require('xmldom').DOMParser
 
 const GRAPHVIZ_COMMAND = 'neato'
 
-window.printJson = (json) => {
+JSON.prettyPrint = (json) => {
   console.log(JSON.stringify(json, null, 4))
 }
 
@@ -81,22 +81,52 @@ const makeDotFileText = (processedData, includeStopPosition, includeStopSize) =>
   return dotLines
 }
 
+const outputSvg = (dataProcessor, viewBox, width, height, outerGroup) => {
+
+  const gTransform = outerGroup.getAttribute('transform')
+
+  const svg = [
+    '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n',
+    '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"',
+    ' "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n',
+    `<svg viewBox="${viewBox}" width="${width}" height="${height}"`,
+    ' xmlns="http://www.w3.org/2000/svg"',
+    ' xmlns:xlink="http://www.w3.org/1999/xlink">\n',
+    ` <g transform="${gTransform}">`,
+    Object.values(dataProcessor.stops).map(stop => stop.toSvg()).join(''),
+    ' </g>',
+    '</svg>'
+  ].join('')
+
+  return svg
+}
+
 const run = async () => {
   try {
     await checkGraphviz()
     const json = await getInput()
-    const processedData = new DataProcessor(json)
+    const dataProcessor = new DataProcessor(json)
+    const dotFileText = makeDotFileText(dataProcessor, false, false)
 
-    const dotFileText = makeDotFileText(processedData, false, false)
+    // const svg = new shell.ShellString(dotFileText).exec('neato -Tsvg', {silent: true}).stdout
+    const svg = new shell.ShellString(dotFileText).exec('neato -Tsvg', {silent: true}).stdout
 
-    console.log(dotFileText)
+    const svgDom = new DomParser().parseFromString(svg)
+    dataProcessor.usePositionsFromSvg(svgDom)
 
-    const svg = new shell.ShellString(dotFileText).exec('neato -Tsvg').stdout
+    const svgDomRoot = svgDom.getElementsByTagName('svg')[0]
+    const svgViewBox = svgDomRoot.getAttribute('viewBox')
+    const svgWidth = svgDomRoot.getAttribute('width')
+    const svgHeight = svgDomRoot.getAttribute('height')
 
-    console.log(svg)
+    const outerGroup = svgDom.getElementById('graph0')
 
-    const svgParsed = new jsxml.XML(svg)
-    console.log(svgParsed.toString())
+    if (outerGroup.getAttribute('id') !== 'graph0') {
+      throw new Error('Unexpected svg layout! Did not find <g> with id "graph0" in graphviz generated SVG.')
+    }
+
+    const svgOutput = outputSvg(dataProcessor, svgViewBox, svgWidth, svgHeight, outerGroup)
+    console.log(svgOutput)
   } catch (error) {
     console.error(error)
   }

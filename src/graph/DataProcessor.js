@@ -56,6 +56,28 @@ class DataProcessor {
     // flatten connections from multidimensional to single dimensional
     this.connectionList = [].concat.apply([], Object.values(this.connections).map(obj => Object.values(obj)))
   }
+
+  usePositionsFromSvg (svgDom) {
+    Object.values(this.stops).forEach(stop => {
+      const stopDom = svgDom.getElementById(stop.id)
+      for (let i = 0; i < stopDom.childNodes.length; i++) {
+        const node = stopDom.childNodes[i]
+
+        if (node.tagName === 'ellipse') {
+          stop.cx = Number(node.getAttribute('cx'))
+          stop.cy = Number(node.getAttribute('cy'))
+        }
+
+        if (node.tagName === 'text') {
+          stop.tx = Number(node.getAttribute('x'))
+          stop.ty = Number(node.getAttribute('y'))
+          stop.tAnchor = node.getAttribute('text-anchor')
+          stop.tFontFamily = node.getAttribute('font-family')
+          stop.tFontSize = node.getAttribute('font-size')
+        }
+      }
+    })
+  }
 }
 
 export default DataProcessor

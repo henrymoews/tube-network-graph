@@ -31,6 +31,11 @@ export const CONNECTION_POINT_OPPOSITES = {
   SOUTHEAST: CONNECTION_POINTS.NORTHWEST
 }
 
+const CIRCLE_RADIUS_ONE_LINE = 2
+const CIRCLE_RADIUS_THREE_LINE = 9
+
+const TEXT_COLOR = 'black'
+
 let idCounter = 0
 
 class Stop {
@@ -40,7 +45,8 @@ class Stop {
 
   /**
    *
-   * @param json {{id: string, name: string, northof: string, eastof: string, westof: string, southof: string, northeastof: string, southeastof: string, northwestof: string, southwestof: string}}
+   * @param json {{id: string, name: string, northof: string, eastof: string, westof: string, southof: string,
+   *   northeastof: string, southeastof: string, northwestof: string, southwestof: string}}
    */
   constructor (json) {
     this.name = json.name
@@ -60,6 +66,12 @@ class Stop {
 
     this.cx = null
     this.cy = null
+
+    this.tx = null          // text
+    this.ty = null
+    this.tAnchor = null
+    this.tFontFamily = null
+    this.tFontSize = null
 
     this.connectionsByConnectionPoint = {}
     CONNECTION_POINT_ORDER.forEach(point => {
@@ -129,6 +141,36 @@ class Stop {
   setPosition (cx, cy) {
     this.cx = cx
     this.cy = cy
+  }
+
+  toSvg () {
+    const stopElement = [
+      '<circle',
+      ` name="${this.name}"`,
+      ` cx="${this.cx}"`,
+      ` cy="${this.cy}"`,
+      ` r="${this.getTotalNumberOfLines() === 1 ? CIRCLE_RADIUS_ONE_LINE : CIRCLE_RADIUS_THREE_LINE}"`,
+      ' stroke="black"',
+      ' stroke-width="3"',
+      ` fill="${this.getTotalNumberOfLines() === 1 ? 'black' : 'white'}"`,
+      '/>'
+    ].join('')
+
+    const textElement = [
+      '<text',
+      ` x="${this.tx}"`,
+      ` y="${this.ty}"`,
+      ` text-anchor="${this.tAnchor}"`,
+      ` fill="${TEXT_COLOR}"`,
+      ` font-size="${this.tFontSize}"`,
+      ` font-family="${this.tFontFamily}"`,
+      '>',
+      this.name,
+      '</text>'
+
+    ].join('')
+
+    return `<g>${stopElement}${textElement}</g>`
   }
 }
 
